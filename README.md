@@ -69,6 +69,8 @@ TODO: Add Nuget link
 
 # Quick Example
 
+> <i>For more examples, checkout [integration tests class](./PaginationHelper.Tests/IntegrationTests.cs)</i>
+
 ## ASP.Net API Project
 
 ```C#
