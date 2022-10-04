@@ -1,0 +1,11 @@
+version: "3.4"
+
+services:
+  test-database:
+    image: postgres:13.6-alpine
+    ports:
+      - "${TEST_DB_PORT:-5433}:5432"
+    environment:
+      POSTGRES_DB: "${TEST_DB_DATABASE:-pagination_helper_tests}"
+      POSTGRES_USER: "${TEST_DB_USER:-pagination_helper_tests}"
+      POSTGRES_PASSWORD: "${TEST_DB_PASSWORD:-pagination_helper_tests}"
