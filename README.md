@@ -91,7 +91,7 @@ public Task<IPaginateResult<FooDto>> GetPaginatedData([FromQuery] PaginateOption
 HTTP GET /paginated?order=dateCol&orderDirection=desk&strCol__eq=hello
 ```
 
-^^^ the above example request will return all rows with `StrCol` contains text `hello`, order by `DateCol` in `descending` order
+^^^ the above example request will return all rows with `StrCol` contains `"hello"`, order by `DateCol` in `descending` order
 
 ```
 HTTP GET /paginated?page=1&rowsPerPage=10&strCol=filter me&dateCol__gte=2000-1-1
@@ -101,9 +101,9 @@ HTTP GET /paginated?page=1&rowsPerPage=10&strCol=filter me&dateCol__gte=2000-1-1
 
 - second page
 - 10 rows per page
-- Any rows that contains `something` text in `StrCol` or `OtherCol`
+- Any rows that contains `"something"` in `StrCol` or `OtherCol`
 - `DateCol` greater than or equal to `2000-1-1` date
-- `StrCol` contains `filter me` text
+- `StrCol` contains `"filter me"`
 
 # Config Options
 
