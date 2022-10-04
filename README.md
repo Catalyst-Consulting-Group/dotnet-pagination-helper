@@ -34,7 +34,7 @@ A dotnet entity framework extension class to perform server side table processin
 
 # Features
 
-- Dynamic paginate, sort, filter, and search options
+- Dynamically paginate, sort, filter, and search data
 - Easy to use on top of existing EF code
 - **Flexible**. Lots of built-in options to perform general filters
 - **Fast**. No in-memory operation, everything translated into SQL
