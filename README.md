@@ -38,7 +38,6 @@ A dotnet entity framework extension class to perform server side table processin
 - Easy to use on top of existing EF code
 - **Flexible**. Lots of built-in options to perform general filters
 - **Fast**. No in-memory operation, everything translated into SQL
-- **Short**. Just one line of extension method
 - **Secured**. Built with Dynamic LinQ, say no to SQL Injection
 
 # Getting Started
