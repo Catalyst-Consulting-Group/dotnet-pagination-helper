@@ -206,7 +206,7 @@ public class IntegrationTests
                 {
                     Date = Utilities.CreateDateTime(2000, 1, 15),
                     Enum = TestEnum.CaseB,
-                    Number = 1.5m,
+                    Number = 1.1m,
                     String = "AABB"
                 },
                 new()
