@@ -1,4 +1,4 @@
-name: Pull Request Build Test
+name: Deploy to NuGet
 
 on: workflow_dispatch
 
