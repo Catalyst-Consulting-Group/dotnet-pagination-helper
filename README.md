@@ -9,7 +9,7 @@
 - [Quick Example](#quick-example)
 - [Documentations](#documentations)
   - [Query Parameters](#query-parameters)
-  - [Developing](#filters)
+  - [Filters](#filters)
   - [Property Types](#property-types)
   - [PaginateOptionsBuilder](#paginateoptionsbuilder)
   - [ToPaginatedAsync](#topaginatedasync)
