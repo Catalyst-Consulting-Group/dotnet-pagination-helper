@@ -112,6 +112,11 @@ namespace PaginationHelper
 
         private static FilterPropertyType MapPropertyType(Type t)
         {
+            var underlyingType = Nullable.GetUnderlyingType(t);
+            if (underlyingType != null)
+            {
+                t = underlyingType;
+            }
             if (t.Equals(typeof(string)))
             {
                 return FilterPropertyType.String;
@@ -220,7 +225,6 @@ namespace PaginationHelper
                     {
                         return $"{name} == \"{value}\"";
                     }
-                    break;
                 case PaginateFilterType.StartWith:
                     return $"{name}.ToLower().StartsWith(\"{value.ToLower()}\")";
                 case PaginateFilterType.EndWith:

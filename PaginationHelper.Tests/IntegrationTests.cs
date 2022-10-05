@@ -31,7 +31,7 @@ public class IntegrationTests
 
         var actual = await _db.TestEntities
             .Select(ATestData.Projection)
-            .ToPaginatedAsync(paginateOptionBuilder.Build());
+            .ToPaginatedAsync(paginateOptionBuilder);
 
         actual.Should().BeEquivalentTo(new PaginateResult<TestDto>()
         {
@@ -72,7 +72,7 @@ public class IntegrationTests
 
         var actual = await _db.TestEntities
             .Select(ATestData.Projection)
-            .ToPaginatedAsync(paginateOptionBuilder.Build());
+            .ToPaginatedAsync(paginateOptionBuilder);
 
         actual.Should().BeEquivalentTo(new PaginateResult<TestDto>()
         {
@@ -120,7 +120,7 @@ public class IntegrationTests
 
         var actual = await _db.TestEntities
             .Select(ATestData.Projection)
-            .ToPaginatedAsync(paginateOptionBuilder.Build());
+            .ToPaginatedAsync(paginateOptionBuilder);
 
         actual.Should().BeEquivalentTo(new PaginateResult<TestDto>()
         {
@@ -160,7 +160,7 @@ public class IntegrationTests
 
         var actual = await _db.TestEntities
             .Select(ATestData.Projection)
-            .ToPaginatedAsync(paginateOptionBuilder.Build());
+            .ToPaginatedAsync(paginateOptionBuilder);
 
         actual.Should().BeEquivalentTo(new PaginateResult<TestDto>()
         {
@@ -196,7 +196,7 @@ public class IntegrationTests
 
         var actual = await _db.TestEntities
             .Select(ATestData.Projection)
-            .ToPaginatedAsync(paginateOptionBuilder.Build());
+            .ToPaginatedAsync(paginateOptionBuilder);
 
         actual.Should().BeEquivalentTo(new PaginateResult<TestDto>()
         {
@@ -215,6 +215,50 @@ public class IntegrationTests
                     Enum = TestEnum.CaseB,
                     Number = 1.5m,
                     String = "BBBB"
+                },
+            },
+            Count = 2
+        }, opt => opt.WithStrictOrdering());
+    }
+
+
+    [Fact]
+    public async Task NoOptions()
+    {
+        var paginateOptionBuilder = new PaginateOptionsBuilder();
+
+        var actual = await _db.TestEntities
+            .Select(ATestData.Projection)
+            .ToPaginatedAsync(paginateOptionBuilder);
+
+        actual.Count.Should().Be(6);
+        actual.Data.Should().HaveCount(6);
+    }
+
+    [Fact]
+    public async Task DifferentProjectionKeys()
+    {
+        var paginateOptionBuilder = new PaginateOptionsBuilder()
+            .Add("somethingElse__end", "1");
+
+        var actual = await _db.TestEntities
+            .Select(e => new
+            {
+                SomethingElse = e.String + "_" + e.Number
+            })
+            .ToPaginatedAsync(paginateOptionBuilder);
+
+        actual.Should().BeEquivalentTo(new PaginateResult<dynamic>()
+        {
+            Data = new List<dynamic>()
+            {
+                new
+                {
+                    SomethingElse = "AAAA_1"
+                },
+                new
+                {
+                    SomethingElse = "AABB_1.1"
                 },
             },
             Count = 2
