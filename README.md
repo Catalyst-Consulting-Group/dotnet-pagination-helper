@@ -39,7 +39,7 @@ A dotnet entity framework extension class to perform server side table processin
 2. Import Package
 
 ```C#
-using CatConsult.PaginationHelper;
+using PaginationHelper;
 ```
 
 3. Use ToPaginateAsync
