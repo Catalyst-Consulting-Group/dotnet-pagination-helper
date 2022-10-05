@@ -31,10 +31,22 @@ A dotnet entity framework extension class to perform server side table processin
 
 # Getting Started
 
-1. Install PAckage
+1. Install NuGet Package
 
-```
+```ps
 > dotnet add package CatConsult.PaginationHelper
+```
+
+2. Import Package
+
+```C#
+using CatConsult.PaginationHelper;
+```
+
+3. Use ToPaginateAsync
+
+```C#
+DbContext.FooEntities.ToPaginatedAsync(paginateOptionsBuilder)
 ```
 
 # Quick Example
@@ -55,7 +67,8 @@ public class FooEntity
 }
 
 ...
-
+using CatConsult.PaginationHelper;
+...
 // A random controller method. Please don't put business logic in controllers when building serious project :D
 [HttpGet("paginated")]
 public Task<IPaginateResult<FooDto>> GetPaginatedData([FromQuery] PaginateOptionsBuilder paginateOptionsBuilder)
