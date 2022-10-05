@@ -39,7 +39,7 @@ A dotnet entity framework extension class to perform server side table processin
 2. Import Package
 
 ```C#
-using PaginationHelper;
+using CatConsult.PaginationHelper;
 ```
 
 3. Use ToPaginateAsync
@@ -50,7 +50,7 @@ DbContext.FooEntities.ToPaginatedAsync(paginateOptionsBuilder)
 
 # Quick Example
 
-> _For more examples, checkout [integration tests class](./PaginationHelper.Tests/IntegrationTests.cs)_
+> _For more examples, checkout [integration tests class](./CatConsult.PaginationHelper.Tests/IntegrationTests.cs)_
 
 ## ASP.Net API Project
 
