@@ -25,7 +25,7 @@ jobs:
           color: brightgreen
           path: PaginationHelper.Tests/TestResults/coverage.opencover.xml
           gist-filename: code-coverage.json
-          gist-id: catconsult-dotnet-pagination-helper
+          gist-id: 33a4dd1f54e8b9cf42cb49328e0c282a
           gist-auth-token: ${{ secrets.GIST_AUTH_TOKEN }}
       - name: Deploy
         run: nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_DEPLOY_KEY}}

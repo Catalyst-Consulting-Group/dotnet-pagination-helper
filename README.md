@@ -1,4 +1,4 @@
-![Test Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Catalyst-Consulting-Group/catconsult-dotnet-pagination-helper/raw/code-coverage.json)
+![Test Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/wztech0192/33a4dd1f54e8b9cf42cb49328e0c282a/raw/code-coverage.json)
 [![Deploy to NuGet](https://github.com/Catalyst-Consulting-Group/dotnet-pagination-helper/actions/workflows/deploy.yml/badge.svg)](https://github.com/Catalyst-Consulting-Group/dotnet-pagination-helper/actions/workflows/deploy.yml)
 [![NuGet stable version](https://badgen.net/nuget/v/CatConsult.PaginationHelper)](https://nuget.org/packages/CatConsult.PaginationHelper)
 
