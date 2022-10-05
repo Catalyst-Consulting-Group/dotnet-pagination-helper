@@ -1,42 +1,21 @@
-<a name="readme-top"></a>
-
+![Test Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/Catalyst-Consulting-Group/catconsult-dotnet-pagination-helper/raw/code-coverage.json)
 [![Deploy to NuGet](https://github.com/Catalyst-Consulting-Group/dotnet-pagination-helper/actions/workflows/deploy.yml/badge.svg)](https://github.com/Catalyst-Consulting-Group/dotnet-pagination-helper/actions/workflows/deploy.yml)
+[![NuGet stable version](https://badgen.net/nuget/v/CatConsult.PaginationHelper)](https://nuget.org/packages/CatConsult.PaginationHelper)
 
 <!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#pagination-helper">Pagination Helper</a>
-    </li>
-    <li>
-      <a href="#features">Features</a>
-    </li>
-    <li>
-      <a href="#getting-started">Features</a>
-    </li>
-    <li>
-        <a href="#quick-example">Quick Example</a>
-    </li>
-    <li>
-        <a href="#documentations">Documentations</a>
-        <ul>
-            <li><a href="#query-parameters">Query Parameters</a></li>
-            <li><a href="#filters">Filters</a></li>
-            <li><a href="#property-types">Property Types</a></li>
-            <li><a href="#paginateoptionsbuilder">PaginateOptionsBuilder</a></li>
-            <li><a href="#topaginatedasync">ToPaginatedAsync</a></li>
-            <li><a href="#ipaginateresult">IPaginateResult</a></li>
-        </ul>
-    </li>
-    <li>
-        <a href="#local-development">Local Development</a>
-    </li>
-  
-  </ol>
-</details>
 
-<!-- ABOUT THE PROJECT -->
+- [Pagination Helper](#pagination-helper)
+- [Features](#Features)
+- [Getting Started](#getting-started)
+- [Quick Example](#quick-example)
+- [Documentations](#documentations)
+  - [Query Parameters](#query-parameters)
+  - [Developing](#filters)
+  - [Property Types](#property-types)
+  - [PaginateOptionsBuilder](#paginateoptionsbuilder)
+  - [ToPaginatedAsync](#topaginatedasync)
+  - [IPaginateResult](#ipaginateresult)
+- [Local Development](#local-development)
 
 # Pagination Helper
 
@@ -56,7 +35,7 @@ TODO: Add Nuget link
 
 # Quick Example
 
-> <i>For more examples, checkout [integration tests class](./PaginationHelper.Tests/IntegrationTests.cs)</i>
+> _For more examples, checkout [integration tests class](./PaginationHelper.Tests/IntegrationTests.cs)_
 
 ## ASP.Net API Project
 
@@ -126,152 +105,16 @@ HTTP GET /paginated?page=1&rowsPerPage=10&strCol=filter me&dateCol__gte=2000-1-1
 
 We included some built-in filter keywords to provide more flexible filtering. Filter keyword can be append to any filter key and they are case-insensitive. All filter keywords start with `two underscore, __XX`. For example, if you want any strCol start with `"A"`, instead of `strCol=A` you will do `strCol__start=A`.
 
-<table>
-    <thead>
-        <tr>
-            <th>Keyword</th>
-            <th>Filter Type</th>
-            <th>Applicable Types</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td valign="top">
-                __in
-            </td>
-            <td valign="top">
-                Contains
-            </td>
-            <td valign="top">
-                <b>String</b> and <b>List</b> type only
-            </td>
-            <td valign="top">
-                item value contains filter value
-                <ul>
-                    <li>
-                        Default filter type for <b>String</b> and <b>List</b> type
-                    </li>
-                    <li>
-                        <b>String</b> type contains is case-insensitive
-                    </li>
-                    <li>
-                        <b>List</b> type contains is case-sensitive 
-                    </li>
-                </ul>
-            </td>
-        </tr>
-        <tr>
-            <td valign="top">
-                __eq
-            </td>
-            <td valign="top">
-                Equal
-            </td>
-            <td valign="top">
-                <b>All</b> except <b>List / Object</b> type
-            </td>
-            <td valign="top">
-                filter value == item value
-                <ul>
-                    <li>
-                        Default filter type for others except <b>String</b> and <b>List</b> type
-                    </li>
-                    <li>
-                        <b>String</b> type equal is case-insensitive
-                    </li>
-                    <li>
-                        <b>Date</b> type only compare <b>Date</b> part. If need to narrow down by time, use greater/less than filter keyword 
-                    </li>
-                </ul>
-            </td>
-        </tr>
-        <tr>
-            <td valign="top">
-                __gt
-            </td>
-            <td valign="top">
-                Greater Than
-            </td>
-            <td valign="top">
-                <b>All</b>, except <b>List / Object</b> type
-            </td>
-            <td valign="top">
-                filter value > item value
-            </td>
-        </tr>
-        <tr>
-            <td valign="top">
-                __gte
-            </td>
-            <td valign="top">
-                Greater Than or Equal to
-            </td>
-            <td valign="top">
-                <b>All</b>, except <b>List / Object</b> type
-            </td>
-            <td valign="top">
-                filter value >= item value
-            </td>
-        </tr>
-        <tr>
-            <td valign="top">
-                __lt
-            </td>
-            <td valign="top">
-                Less Than
-            </td>
-            <td valign="top">
-                <b>All</b>, except <b>List / Object</b> type
-            </td>
-            <td valign="top">
-                filter value < item value
-            </td>
-        </tr>
-        <tr>
-            <td valign="top">
-                __gt
-            </td>
-            <td valign="top">
-                Less Than or Equal to
-            </td>
-            <td valign="top">
-                <b>All</b>, except <b>List / Object</b> type
-            </td>
-            <td valign="top">
-                filter value <= item value
-            </td>
-        </tr>
-        <tr>
-            <td valign="top">
-                __start
-            </td>
-            <td valign="top">
-                Starts With
-            </td>
-            <td valign="top">
-                <b>String</b> type only
-            </td>
-            <td valign="top">
-                item value starts with filter value
-            </td>
-        </tr>
-        <tr>
-            <td valign="top">
-                __end
-            </td>
-            <td valign="top">
-                Ends With
-            </td>
-            <td valign="top">
-                <b>String</b> type only
-            </td>
-            <td valign="top">
-                item value ends with filter value
-            </td>
-        </tr>
-    </tbody>
-</table>
+| Keyword   | Filter Type              | Applicable Property Types          | Description                           | Note                                                                                                                                                                                                                       |
+| --------- | ------------------------ | ---------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| \_\_in    | Contains                 | `String` and `List` type only      | item value `contains` filter value    | Default filter type for `String` and `List` type. <br/> `String` type contains is case-insensitive.<br/> `String` and `List` type only `List` type contains is case-sensitive                                              |
+| \_\_eq    | Equal                    | `All` except `List / Object` type  | filter value `==` item value          | Default filter type for others except `String` and `List` type<br/> `String` type equal is case-insensitive<br/>`Date` type only compare `Date` part. If need to narrow down by time, use greater/less than filter keyword |
+| \_\_gt    | Greater Than             | `All`, except `List / Object` type | filter value `>` item value           |
+| \_\_gte   | Greater Than or Equal to | `All`, except `List / Object` type | filter value `>=` item value          |
+| \_\_lt    | Less Than or Equal to    | `All`, except `List / Object` type | filter value `<` item value           |
+| \_\_lte   | Less Than or Equal to    | `All`, except `List / Object` type | filter value `<=` item value          |
+| \_\_start | Starts With              | `String` type only                 | item value `starts with` filter value |
+| \_\_end   | Ends With                | `String` type only                 | item value `ends with` filter value   |
 
 All filter keys accept multiple values.
 
