@@ -31,7 +31,11 @@ A dotnet entity framework extension class to perform server side table processin
 
 # Getting Started
 
-TODO: Add Nuget link
+1. Install PAckage
+
+```
+> dotnet add package CatConsult.PaginationHelper
+```
 
 # Quick Example
 
