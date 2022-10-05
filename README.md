@@ -1,5 +1,7 @@
 <a name="readme-top"></a>
 
+[![Deploy to NuGet](https://github.com/Catalyst-Consulting-Group/dotnet-pagination-helper/actions/workflows/deploy.yml/badge.svg)](https://github.com/Catalyst-Consulting-Group/dotnet-pagination-helper/actions/workflows/deploy.yml)
+
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
