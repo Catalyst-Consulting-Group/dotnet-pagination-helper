@@ -6,7 +6,6 @@ using Xunit;
 
 namespace CatConsult.PaginationHelper.Tests.UnitTests;
 
-[Collection("Database Collection")]
 public class PaginateOptionsBuilderTests
 {
     [Fact]
@@ -14,6 +13,18 @@ public class PaginateOptionsBuilderTests
     {
         var paginateOptionBuilder = new PaginateOptionsBuilder();
         var options = paginateOptionBuilder.Build();
+        options.Should().BeEquivalentTo(new PaginateOptions());
+    }
+
+    [Fact]
+    public void BuildRemoved()
+    {
+        var paginateOptionBuilder = new PaginateOptionsBuilder();
+        var options = paginateOptionBuilder
+            .Add("orderBy" , "t")
+            .Add("orderDirection" , "asc")
+            .Remove("orderBy", "orderDirection")
+            .Build();
         options.Should().BeEquivalentTo(new PaginateOptions());
     }
 
@@ -46,7 +57,7 @@ public class PaginateOptionsBuilderTests
             OrderBy = "tOrderBy",
             OrderDirection = "asc",
             Search = "tSearch",
-            Columns = new List<string>() { "col1", "col2", "col3" },
+            Columns = new HashSet<string>() { "col1", "col2", "col3" },
             Filters = new Dictionary<string, List<PaginateFilterValue>>()
             {
                 { "s", new()
@@ -132,7 +143,7 @@ public class PaginateOptionsBuilderTests
 
         options.Should().BeEquivalentTo(new PaginateOptions()
         {
-            Columns = new List<string>() { "col3" },
+            Columns = new HashSet<string>() { "col3" },
             Filters = new Dictionary<string, List<PaginateFilterValue>>()
             {
                 {
@@ -164,7 +175,7 @@ public class PaginateOptionsBuilderTests
 
         options.Should().BeEquivalentTo(new PaginateOptions()
         {
-            Columns = new List<string>() { "col3" },
+            Columns = new HashSet<string>() { "col3" },
             Filters = new Dictionary<string, List<PaginateFilterValue>>()
             {
                 {
@@ -174,6 +185,58 @@ public class PaginateOptionsBuilderTests
                         new PaginateFilterValue()
                         {
                             Value = "c"
+                        },
+                    }
+                },
+            }
+        });
+    }  
+    
+    [Fact]
+    public void Multiple_With_Square_Bracket()
+    {
+        var paginateOptionBuilder = new PaginateOptionsBuilder()
+            .Add("columns", "col1", "col2")
+            .Add("columns[]", "col3", "col4")
+            .Add("columns[5]", "col5")
+            .Add("t[0]", "t1")
+            .Add("t[1]", "t2")
+            .Add("x[]", "x1")
+            .Add("x[]", "x2");
+
+        var options = paginateOptionBuilder
+          .Build();
+
+        options.Should().BeEquivalentTo(new PaginateOptions()
+        {
+            Columns = new HashSet<string>() { "col1", "col2", "col3", "col4", "col5" },
+            Filters = new Dictionary<string, List<PaginateFilterValue>>()
+            {
+                {
+                    "t",
+                    new()
+                    {
+                        new PaginateFilterValue()
+                        {
+                            Value = "t1"
+                        }, 
+                        new PaginateFilterValue()
+                        {
+                            Value = "t2"
+                        },
+                    }
+                }, 
+                {
+                    "x",
+                    new()
+                    {
+                        new PaginateFilterValue()
+                        {
+                            Value = "x1"
+                        }, 
+                        new PaginateFilterValue()
+                        {
+                            Value = "x2"
                         },
                     }
                 },

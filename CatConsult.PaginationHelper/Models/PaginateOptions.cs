@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace CatConsult.PaginationHelper
 {
-    public class PaginateOptions
+    public class PaginateOptions: IPaginateOptions
     {
         public PaginateOptions()
         {
@@ -13,7 +13,6 @@ namespace CatConsult.PaginationHelper
             var noIncludingSet = includingSet == null || !includingSet.Any();
             if (queryParams != null)
             {
-
                 foreach (var item in queryParams)
                 {
                     if (item.Value.Any())
@@ -52,10 +51,14 @@ namespace CatConsult.PaginationHelper
                             {
                                 // incase ["a,b", "c"], join then split will yield ["a", "b", "c"]
                                 var strVal = string.Join(",", item.Value).Split(",");
-                                Columns = strVal;
-                                if (excludingSet != null)
+
+                                foreach(var col in strVal)
                                 {
-                                    Columns = Columns.Where(c => !excludingSet.Contains(c));
+                                    var loweredCol = col.ToLower();
+                                    if (excludingSet == null || !excludingSet.Contains(loweredCol))
+                                    {
+                                        Columns.Add(loweredCol);
+                                    }
                                 }
                             }
                         }
@@ -86,7 +89,7 @@ namespace CatConsult.PaginationHelper
         public string OrderBy { get; set; }
         public string OrderDirection { get; set; } = "ASC";
         public IDictionary<string, List<PaginateFilterValue>> Filters { get; set; } = new Dictionary<string, List<PaginateFilterValue>>();
-        public IEnumerable<string> Columns { get; set; } = new List<string>();
+        public ISet<string> Columns { get; set; } = new HashSet<string>();
         public int RowsPerPage { get; set; }
         public int Page { get; set; }
         public string Search { get; set; }

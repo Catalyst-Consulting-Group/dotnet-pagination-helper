@@ -129,4 +129,21 @@ public class FilterNumberTests
             1.1m, 1.5m
         }, opt => opt.WithStrictOrdering());
     }
+
+    [Fact]
+    public async Task Filter_Number_Invalid()
+    {
+        var paginateOptionBuilder = new PaginateOptionsBuilder()
+            .Add("Number__gte", "adwad")
+            .Add("Number__gt", "adwad")
+            .Add("Number__lte", "adwad")
+            .Add("Number__lt", "adwad");
+
+        var actual = await _db.TestEntities
+            .Select(ATestData.Projection)
+            .ToPaginatedAsync(paginateOptionBuilder);
+
+        actual.Data.Should().BeEmpty();
+        actual.Count.Should().Be(0);
+    }
 }

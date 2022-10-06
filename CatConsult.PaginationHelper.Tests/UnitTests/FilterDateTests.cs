@@ -133,4 +133,21 @@ public class FilterDateTests
             Utilities.CreateDateTime(2000, 2, 15)
         }, opt => opt.WithStrictOrdering());
     }
+
+    [Fact]
+    public async Task Filter_Date_Invalid_Value()
+    {
+        var paginateOptionBuilder = new PaginateOptionsBuilder()
+            .Add("Date__gte", "asdbad")
+            .Add("Date__gt", "asdbad")
+            .Add("Date__lt", "asdbad")
+            .Add("Date__lte", "asdbad");
+
+        var actual = await _db.TestEntities
+            .Select(ATestData.Projection)
+            .ToPaginatedAsync(paginateOptionBuilder);
+
+        actual.Data.Should().BeEmpty();
+        actual.Count.Should().Be(0);
+    }
 }

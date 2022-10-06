@@ -38,7 +38,7 @@ namespace CatConsult.PaginationHelper
         public static async Task<IPaginateResult<T>> ToPaginatedAsync<T>
         (
             this IQueryable<T> query,
-            PaginateOptions options,
+            IPaginateOptions options,
             Func<IQueryable<T>, IQueryable<T>> transform = null)
         {
 
@@ -186,13 +186,13 @@ namespace CatConsult.PaginationHelper
             switch (filterType)
             {
                 case PaginateFilterType.LessThan:
-                    return $"{name} < \"{value}\"";
+                    return ValidCompValOrFalse(ptype, name, "<", value);
                 case PaginateFilterType.LessThanOrEqual:
-                    return $"{name} <= \"{value}\"";
+                    return ValidCompValOrFalse(ptype, name, "<=", value);
                 case PaginateFilterType.GreaterThan:
-                    return $"{name} > \"{value}\"";
+                    return ValidCompValOrFalse(ptype, name, ">", value);
                 case PaginateFilterType.GreaterThanOrEqual:
-                    return $"{name} >= \"{value}\"";
+                    return ValidCompValOrFalse(ptype, name, ">=", value);
                 case PaginateFilterType.In:
                     if (ptype == FilterPropertyType.String)
                     {
@@ -203,12 +203,6 @@ namespace CatConsult.PaginationHelper
                     if (ptype == FilterPropertyType.String)
                     {
                         return $"{name}.ToLower() == \"{value.ToLower()}\"";
-                    }
-                    else if (ptype == FilterPropertyType.Number)
-                    {
-                        return double.TryParse(value, out var num)
-                            ? $"{name} == \"{num}\""
-                            : "false";
                     }
                     else if (ptype == FilterPropertyType.DateTime)
                     {
@@ -223,7 +217,7 @@ namespace CatConsult.PaginationHelper
                     }
                     else
                     {
-                        return $"{name} == \"{value}\"";
+                        return ValidCompValOrFalse(ptype, name, "==", value);
                     }
                 case PaginateFilterType.StartWith:
                     return $"{name}.ToLower().StartsWith(\"{value.ToLower()}\")";
@@ -231,6 +225,31 @@ namespace CatConsult.PaginationHelper
                     return $"{name}.ToLower().EndsWith(\"{value.ToLower()}\")";
             }
             return string.Empty;
+        }
+
+        private static string ValidCompValOrFalse(FilterPropertyType ptype, string name, string op, string value)
+        {
+            var compare = $"{name} {op} \"{value}\"";
+            if (ptype == FilterPropertyType.Number)
+            {
+                if(double.TryParse(value, out var _))
+                {
+                    return compare;
+                }
+            }
+            else if (ptype == FilterPropertyType.DateTime)
+            {
+                if(DateTime.TryParse(value, out var _))
+                {
+                    return compare;
+                }
+            }
+            else
+            {
+                return compare;
+            }
+
+            return "false";
         }
     }
 }

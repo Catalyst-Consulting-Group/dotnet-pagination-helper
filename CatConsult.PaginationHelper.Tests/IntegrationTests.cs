@@ -234,6 +234,18 @@ public class IntegrationTests
         actual.Count.Should().Be(6);
         actual.Data.Should().HaveCount(6);
     }
+    
+    [Fact]
+    public async Task NullOptions()
+    {
+        IPaginateOptionsBuilder paginateOptionBuilder = null;
+
+        var actual = await _db.TestEntities
+            .Select(ATestData.Projection)
+            .ToPaginatedAsync(paginateOptionBuilder);
+        actual.Count.Should().Be(6);
+        actual.Data.Should().HaveCount(6);
+    }    
 
     [Fact]
     public async Task DifferentProjectionKeys()
@@ -264,4 +276,38 @@ public class IntegrationTests
             Count = 2
         }, opt => opt.WithStrictOrdering());
     }
+
+
+    [Fact]
+    public async Task Transform_After_Filter()
+    {
+        var paginateOptionBuilder = new PaginateOptionsBuilder()
+          .Add("number__gt", "1");
+
+        var actual = await _db.TestEntities
+            .ToPaginatedAsync(paginateOptionBuilder, query => query.Where(q => q.Number <= 1.5m));
+
+        actual.Should().BeEquivalentTo(new PaginateResult<dynamic>()
+        {
+            Data = new List<TestDto>()
+            {
+                new()
+                {
+                    Date = Utilities.CreateDateTime(2000, 1, 15),
+                    Enum = TestEnum.CaseB,
+                    Number = 1.1m,
+                    String = "AABB"
+                },
+                new()
+                {
+                    Date = Utilities.CreateDateTime(2000, 2, 15),
+                    Enum = TestEnum.CaseB,
+                    Number = 1.5m,
+                    String = "BBBB"
+                },
+            },
+            Count = 2
+        }, opt => opt.WithStrictOrdering());
+    }
+
 }

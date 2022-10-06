@@ -32,13 +32,32 @@ namespace CatConsult.PaginationHelper
         /// <returns></returns>
         public IPaginateOptionsBuilder Add(string key, params string[] values)
         {
-            if (!TryGetValue(key, out var list))
+            var loweredKey = key.ToLower();
+            if (!TryGetValue(loweredKey, out var list))
             {
-                list = this[key] = new List<string>();
+                list = this[loweredKey] = new List<string>();
             }
             foreach (var val in values)
             {
                 list.Add(val);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Remove keys if exist
+        /// </summary>
+        /// <param name="keys">keys</param>
+        /// <returns></returns>
+        public IPaginateOptionsBuilder Remove(params string[] keys)
+        {
+            foreach(var key in keys)
+            {
+                var loweredKey = key.ToLower();
+                if (this.ContainsKey(loweredKey))
+                {
+                    base.Remove(loweredKey);
+                }
             }
             return this;
         }
@@ -52,7 +71,7 @@ namespace CatConsult.PaginationHelper
         {
             foreach (var column in columns)
             {
-                _includingSet.Add(column);
+                _includingSet.Add(column.ToLower());
             }
             return this;
         }
@@ -66,7 +85,7 @@ namespace CatConsult.PaginationHelper
         {
             foreach (var column in columns)
             {
-                _excludingSet.Add(column);
+                _excludingSet.Add(column.ToLower());
             }
             return this;
         }
