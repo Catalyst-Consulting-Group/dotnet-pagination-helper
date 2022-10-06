@@ -18,7 +18,7 @@
 
 # Pagination Helper
 
-A dotnet entity framework extension class to perform server side table processing (**paginate, sort, search, and filter**) via generic options. The extension method extend on top of EntityFramework IQueryable. Try this out if you're tired of duplicated dotnet server side processing boilerplate code!
+A dotnet entity framework extension class to dynamically perform server-side data processing (**paging, sorting, searching, and filtering**). The extension method is extended on top of EntityFramework IQueryable type. Try this out if you're tired of duplicated server-side processing boilerplate code!
 
 # Features
 
