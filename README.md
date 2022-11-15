@@ -166,6 +166,9 @@ builder.ExcludeColumns("strCol", "fooCol")
 
 // to only include defined column for search or filter
 builder.IncludeColumns("strCol", "fooCol")
+
+// override default filters by type
+builder.OverrideDefaultFilterType(FilterPropertyType.String, FilterPropertyType.StartWith);
 ```
 
 ## ToPaginatedAsync

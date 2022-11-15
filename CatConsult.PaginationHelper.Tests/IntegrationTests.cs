@@ -310,4 +310,30 @@ public class IntegrationTests
         }, opt => opt.WithStrictOrdering());
     }
 
+    [Fact]
+    public async Task Override_Default_Search_Filter_To_StartWith()
+    {
+        var paginateOptionBuilder = new PaginateOptionsBuilder()
+          .Add("string", "B")
+          .OverrideDefaultFilterType(FilterPropertyType.String, PaginateFilterType.StartWith);
+
+        var actual = await _db.TestEntities
+            .ToPaginatedAsync(paginateOptionBuilder);
+
+        actual.Should().BeEquivalentTo(new PaginateResult<dynamic>()
+        {
+            Data = new List<TestDto>()
+            {
+                new()
+                {
+                    Date = Utilities.CreateDateTime(2000, 2, 15),
+                    Enum = TestEnum.CaseB,
+                    Number = 1.5m,
+                    String = "BBBB"
+                },
+            },
+            Count = 1
+        }, opt => opt.WithStrictOrdering());
+    }
+
 }

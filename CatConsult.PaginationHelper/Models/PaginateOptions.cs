@@ -8,7 +8,7 @@ namespace CatConsult.PaginationHelper
         {
         }
 
-        public PaginateOptions(IDictionary<string, ICollection<string>> queryParams, ISet<string> excludingSet = null, ISet<string> includingSet = null)
+        public PaginateOptions(IDictionary<string, ICollection<string>> queryParams, ISet<string> excludingSet = null, ISet<string> includingSet = null, IDictionary<FilterPropertyType, PaginateFilterType> overrideDefaultFilterTypes = null)
         {
             var noIncludingSet = includingSet == null || !includingSet.Any();
             if (queryParams != null)
@@ -83,6 +83,15 @@ namespace CatConsult.PaginationHelper
                         }
                     }
                 }
+        
+                // override
+                if(overrideDefaultFilterTypes != null)
+                {
+                    foreach(var entry in overrideDefaultFilterTypes)
+                    {
+                        DefaultFilterTypes[entry.Key] = entry.Value;
+                    }
+                }
             }
         }
 
@@ -93,6 +102,10 @@ namespace CatConsult.PaginationHelper
         public int RowsPerPage { get; set; }
         public int Page { get; set; }
         public string Search { get; set; }
-
+        public IDictionary<FilterPropertyType, PaginateFilterType> DefaultFilterTypes { get; set; } = new Dictionary<FilterPropertyType, PaginateFilterType>()
+        {
+            { FilterPropertyType.String, PaginateFilterType.In },
+            { FilterPropertyType.List, PaginateFilterType.In },
+        };
     }
 }

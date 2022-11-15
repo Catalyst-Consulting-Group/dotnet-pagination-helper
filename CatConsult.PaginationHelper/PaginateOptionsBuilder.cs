@@ -11,7 +11,7 @@ namespace CatConsult.PaginationHelper
     /// </example>
     public class PaginateOptionsBuilder : Dictionary<string, ICollection<string>>, IPaginateOptionsBuilder
     {
-
+        public IDictionary<FilterPropertyType, PaginateFilterType> _overrideDefaultFilterTypes = new Dictionary<FilterPropertyType, PaginateFilterType>();
         private readonly ISet<string> _excludingSet = new HashSet<string>();
         private readonly ISet<string> _includingSet = new HashSet<string>();
 
@@ -21,7 +21,7 @@ namespace CatConsult.PaginationHelper
         /// <returns></returns>
         public PaginateOptions Build()
         {
-            return new PaginateOptions(this, _excludingSet, _includingSet);
+            return new PaginateOptions(this, _excludingSet, _includingSet, _overrideDefaultFilterTypes);
         }
 
         /// <summary>
@@ -87,6 +87,17 @@ namespace CatConsult.PaginationHelper
             {
                 _excludingSet.Add(column.ToLower());
             }
+            return this;
+        }
+
+        /// <summary>
+        /// Excluding column keys.
+        /// </summary>
+        /// <param name="columns">excluding keys</param>
+        /// <returns></returns>
+        public IPaginateOptionsBuilder OverrideDefaultFilterType(FilterPropertyType ptype, PaginateFilterType ftype)
+        {
+            _overrideDefaultFilterTypes[ptype] = ftype;
             return this;
         }
     }

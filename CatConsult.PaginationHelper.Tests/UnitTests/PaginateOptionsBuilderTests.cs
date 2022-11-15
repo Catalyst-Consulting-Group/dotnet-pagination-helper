@@ -191,6 +191,27 @@ public class PaginateOptionsBuilderTests
             }
         });
     }  
+
+    [Fact]
+    public void OverrideDefaultFilterType()
+    {
+        var paginateOptionBuilder = new PaginateOptionsBuilder()
+            .OverrideDefaultFilterType(FilterPropertyType.String, PaginateFilterType.StartWith)
+            .OverrideDefaultFilterType(FilterPropertyType.Number, PaginateFilterType.Equal);
+         
+        var options = paginateOptionBuilder
+            .Build();
+
+        options.Should().BeEquivalentTo(new PaginateOptions()
+        {
+            DefaultFilterTypes = new Dictionary<FilterPropertyType, PaginateFilterType>()
+            {
+                { FilterPropertyType.String, PaginateFilterType.StartWith },
+                { FilterPropertyType.List, PaginateFilterType.In },
+                { FilterPropertyType.Number, PaginateFilterType.Equal },
+            }
+        });
+    }  
     
     [Fact]
     public void Multiple_With_Square_Bracket()
@@ -240,7 +261,7 @@ public class PaginateOptionsBuilderTests
                         },
                     }
                 },
-            }
+            },
         });
     }
 }

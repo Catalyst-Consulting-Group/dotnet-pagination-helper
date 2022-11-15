@@ -9,5 +9,6 @@ namespace CatConsult.PaginationHelper
         int RowsPerPage { get; set; }
         int Page { get; set; }
         string Search { get; set; }
+        IDictionary<FilterPropertyType, PaginateFilterType> DefaultFilterTypes { get; }
     }
 }

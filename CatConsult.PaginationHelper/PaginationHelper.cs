@@ -62,7 +62,7 @@ namespace CatConsult.PaginationHelper
                 if (propertyTypes.TryGetValue(filterEntry.Key, out var filterPropertyType))
                 {
                     // filter by each individual columns
-                    var filterQueryStr = DynamicTranslate(filterPropertyType, filterEntry.Key, filterEntry.Value);
+                    var filterQueryStr = DynamicTranslate(options.DefaultFilterTypes, filterPropertyType, filterEntry.Key, filterEntry.Value);
                     // filter query use AND
                     query = query.Where(filterQueryStr);
                 }
@@ -74,7 +74,7 @@ namespace CatConsult.PaginationHelper
                 var searchQueryStr = options.Columns
                     .Select(c => c.ToLower())
                     .Where(c => propertyTypes.ContainsKey(c))
-                    .Select(c => DynamicTranslate(propertyTypes[c], c, options.Search));
+                    .Select(c => DynamicTranslate(options.DefaultFilterTypes, propertyTypes[c], c, options.Search));
 
                 // search query use OR
                 query = query.Where(string.Join(" || ", searchQueryStr));
@@ -138,14 +138,14 @@ namespace CatConsult.PaginationHelper
             return FilterPropertyType.Other;
         }
 
-        private static string DynamicTranslate(FilterPropertyType ptype, string name, IEnumerable<PaginateFilterValue> values)
+        private static string DynamicTranslate(IDictionary<FilterPropertyType, PaginateFilterType> defaultFilterTypes, FilterPropertyType ptype, string name, IEnumerable<PaginateFilterValue> values)
         {
             var result = new List<string>();
 
             // use AND for range filter. For example: 5 < quantity and quantity < 10
             var rangeFilterValues = string.Join(" && ", values
                 .Where(v => v.IsRangeFilterType)
-                .Select(v => DynamicTranslate(ptype, name, v)));
+                .Select(v => DynamicTranslate(defaultFilterTypes, ptype, name, v)));
 
             if (!string.IsNullOrWhiteSpace(rangeFilterValues))
             {
@@ -155,7 +155,7 @@ namespace CatConsult.PaginationHelper
             // use OR for non range filter. For example: name = "A" or name = "B"
             var nonRangeFilterValues = string.Join(" || ", values
                 .Where(v => !v.IsRangeFilterType)
-                .Select(v => DynamicTranslate(ptype, name, v)));
+                .Select(v => DynamicTranslate(defaultFilterTypes, ptype, name, v)));
 
             if (!string.IsNullOrWhiteSpace(nonRangeFilterValues))
             {
@@ -170,17 +170,23 @@ namespace CatConsult.PaginationHelper
             return result.First();
         }
 
-        private static string DynamicTranslate(FilterPropertyType ptype, string name, PaginateFilterValue pval)
+        private static string DynamicTranslate(IDictionary<FilterPropertyType, PaginateFilterType> defaultFilterTypes, FilterPropertyType ptype, string name, PaginateFilterValue pval)
         {
-            return DynamicTranslate(ptype, name, pval.Value, pval.FilterType);
+            return DynamicTranslate(defaultFilterTypes, ptype, name, pval.Value, pval.FilterType);
         }
-        private static string DynamicTranslate(FilterPropertyType ptype, string name, string value, PaginateFilterType? filterType = null)
+
+        private static string DynamicTranslate(IDictionary<FilterPropertyType, PaginateFilterType> defaultFilterTypes, FilterPropertyType ptype, string name, string value, PaginateFilterType? filterType = null)
         {
             if (!filterType.HasValue)
             {
-                filterType = ptype is FilterPropertyType.String or FilterPropertyType.List
-                    ? PaginateFilterType.In
-                    : PaginateFilterType.Equal;
+                if(defaultFilterTypes != null && defaultFilterTypes.TryGetValue(ptype, out var defaultType))
+                {
+                    filterType = defaultType;
+                }
+                else
+                {
+                    filterType = PaginateFilterType.Equal;
+                }
             };
 
             switch (filterType)

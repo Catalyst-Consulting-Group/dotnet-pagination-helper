@@ -36,5 +36,12 @@ namespace CatConsult.PaginationHelper
         /// <param name="columns">excluding keys</param>
         /// <returns></returns>
         IPaginateOptionsBuilder ExcludeColumns(params string[] columns);
+
+        /// <summary>
+        /// Excluding column keys.
+        /// </summary>
+        /// <param name="columns">excluding keys</param>
+        /// <returns></returns>
+        IPaginateOptionsBuilder OverrideDefaultFilterType(FilterPropertyType ptype, PaginateFilterType ftype);
     }
 }
