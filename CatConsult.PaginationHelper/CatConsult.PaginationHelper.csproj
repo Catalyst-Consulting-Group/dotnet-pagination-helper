@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<PackageId>CatConsult.PaginationHelper</PackageId>
-		<PackageVersion>1.0.3</PackageVersion>
+		<PackageVersion>1.0.4</PackageVersion>
 		<TargetFrameworks>net6.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
