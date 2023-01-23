@@ -46,7 +46,9 @@ public class PaginationTests
                     String = "AABB"
                 },
             },
-            Count = 6
+            Count = 6,
+            RowsPerPage = 2,
+            CurrentPage = 0
         }, opt => opt.WithStrictOrdering());
     }
 
@@ -75,7 +77,9 @@ public class PaginationTests
                 },
                 new()
             },
-            Count = 6
+            Count = 6,
+            RowsPerPage = 2,
+            CurrentPage = 2
         }, opt => opt.WithStrictOrdering());
     }
 
@@ -95,7 +99,9 @@ public class PaginationTests
         actual.Should().BeEquivalentTo(new PaginateResult<TestDto>()
         {
             Data = new List<TestDto>(),
-            Count = 6
+            Count = 6,
+            RowsPerPage = 2,
+            CurrentPage = 1000
         }, opt => opt.WithStrictOrdering());
     }
 

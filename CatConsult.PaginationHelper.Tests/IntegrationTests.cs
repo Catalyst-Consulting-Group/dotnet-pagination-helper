@@ -50,10 +50,17 @@ public class IntegrationTests
                     Enum = TestEnum.CaseA,
                     Number = 1,
                     String = "AAAA"
-                },
+                }
             },
-            Count = 6
+            Count = 6,
+            RowsPerPage = 2,
+            CurrentPage = 2
         }, opt => opt.WithStrictOrdering());
+
+        actual.RowsPerPage.Should().Be(2);
+        actual.TotalPages.Should().Be(3);
+        actual.PreviousPage.Should().Be(1);
+        actual.NextPage.Should().BeNull();
     }
 
     [Fact]
@@ -102,8 +109,14 @@ public class IntegrationTests
                     String = "AABB"
                 }
             },
-            Count = 4
+            Count = 4,
+            RowsPerPage = 3,
         }, opt => opt.WithStrictOrdering());
+
+        actual.RowsPerPage.Should().Be(3);
+        actual.TotalPages.Should().Be(2);
+        actual.PreviousPage.Should().BeNull();
+        actual.NextPage.Should().Be(1);
     }
 
     [Fact]
@@ -234,7 +247,7 @@ public class IntegrationTests
         actual.Count.Should().Be(6);
         actual.Data.Should().HaveCount(6);
     }
-    
+
     [Fact]
     public async Task NullOptions()
     {
@@ -245,7 +258,7 @@ public class IntegrationTests
             .ToPaginatedAsync(paginateOptionBuilder);
         actual.Count.Should().Be(6);
         actual.Data.Should().HaveCount(6);
-    }    
+    }
 
     [Fact]
     public async Task DifferentProjectionKeys()

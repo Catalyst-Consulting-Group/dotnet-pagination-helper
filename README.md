@@ -86,6 +86,11 @@ public Task<IPaginateResult<FooDto>> GetPaginatedData([FromQuery] PaginateOption
 {
   data: any[]; // list of paginated data
   count: number; // total matched records in the database
+  currentPage: number;
+  rowsPerPage: number;
+  totalPages: number;
+  previousPage: number | null; // null if no previous page
+  nextPage: number | null; // null if no next page
 }
 ```
 
@@ -189,6 +194,11 @@ public interface IPaginateResult<T>
 {
     IEnumerable<T> Data { get; set; } // paginated and filtered item list
     int Count { get; set; } // total matched records in the database
+    int CurrentPage { get; set; }
+    int RowsPerPage { get; set; }
+    int TotalPages { get; }
+    int? PreviousPage { get; }
+    int? NextPage { get; }
 }
 ```
 

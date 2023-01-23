@@ -106,7 +106,9 @@ namespace CatConsult.PaginationHelper
             return new PaginateResult<T>()
             {
                 Count = count,
-                Data = result
+                Data = result,
+                RowsPerPage = options.RowsPerPage,
+                CurrentPage = options.Page
             };
         }
 
@@ -179,7 +181,7 @@ namespace CatConsult.PaginationHelper
         {
             if (!filterType.HasValue)
             {
-                if(defaultFilterTypes != null && defaultFilterTypes.TryGetValue(ptype, out var defaultType))
+                if (defaultFilterTypes != null && defaultFilterTypes.TryGetValue(ptype, out var defaultType))
                 {
                     filterType = defaultType;
                 }
@@ -238,14 +240,14 @@ namespace CatConsult.PaginationHelper
             var compare = $"{name} {op} \"{value}\"";
             if (ptype == FilterPropertyType.Number)
             {
-                if(double.TryParse(value, out var _))
+                if (double.TryParse(value, out var _))
                 {
                     return compare;
                 }
             }
             else if (ptype == FilterPropertyType.DateTime)
             {
-                if(DateTime.TryParse(value, out var _))
+                if (DateTime.TryParse(value, out var _))
                 {
                     return compare;
                 }
