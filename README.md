@@ -68,9 +68,8 @@ public class FooEntity
 ...
 using CatConsult.PaginationHelper;
 ...
-// A random controller method. Please don't put business logic in controllers when building serious project :D
-[HttpGet("paginated")]
-public Task<IPaginateResult<FooDto>> GetPaginatedData([FromQuery] PaginateOptionsBuilder paginateOptionsBuilder)
+// A random controller method. 
+public async Task<IPaginateResult<FooDto>> GetPaginatedData([FromQuery] PaginateOptionsBuilder paginateOptionsBuilder)
 {
     return await _db.FooEntities
         .Where(...) // pre filter data if needed
