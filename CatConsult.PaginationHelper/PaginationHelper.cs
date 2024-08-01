@@ -206,7 +206,9 @@ namespace CatConsult.PaginationHelper
                     {
                         return $"{name}.ToLower().Contains(\"{value.ToLower()}\")";
                     }
-                    return $"{name}.Contains(\"{value}\")";
+                    // This will turn Parent.Child into Parent.Any(Parent => Parent.Child == value)
+                    var parentName = name.Split('.')[0];
+                    return $"{parentName}.Any({parentName} => {name} == \"{value}\")";
                 case PaginateFilterType.Equal:
                     if (ptype == FilterPropertyType.String)
                     {
@@ -228,11 +230,23 @@ namespace CatConsult.PaginationHelper
                         return ValidCompValOrFalse(ptype, name, "==", value);
                     }
                 case PaginateFilterType.StartWith:
-                    return $"{name}.ToLower().StartsWith(\"{value.ToLower()}\")";
+                    return StrCompare(ptype, name, "StartsWith", value);
                 case PaginateFilterType.EndWith:
-                    return $"{name}.ToLower().EndsWith(\"{value.ToLower()}\")";
+                    return StrCompare(ptype, name, "EndsWith", value);
             }
             return string.Empty;
+        }
+
+        private static string StrCompare(FilterPropertyType ptype, string name, string op, string value)
+        {
+            if (ptype == FilterPropertyType.List)
+            {
+                // This will turn Parent.Child into Parent.Any(Parent => Parent.Child == value)
+                var parentName = name.Split('.')[0];
+                return $"{parentName}.Any({parentName} => {name}.ToLower().{op}(\"{value.ToLower()}\"))";
+            }
+
+            return $"{name}.ToLower().{op}(\"{value.ToLower()}\")";
         }
 
         private static string ValidCompValOrFalse(FilterPropertyType ptype, string name, string op, string value)

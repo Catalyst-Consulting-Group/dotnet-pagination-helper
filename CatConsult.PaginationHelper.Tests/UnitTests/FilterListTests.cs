@@ -34,6 +34,64 @@ public class FilterListTests
     }
 
     [Fact]
+    public async Task Filter_List_Starts_With()
+    {
+        var paginateOptionBuilder = new PaginateOptionsBuilder()
+            .Add("List__start", "n1");
+
+        var actual = await _db.TestEntities
+            .Select(ATestData.Projection)
+            .ToPaginatedAsync(paginateOptionBuilder);
+
+        actual.Data.Select(d => d.List).Should().BeEquivalentTo(new List<List<string>>()
+        {
+           new(){ "N1", "N2" }
+        }, opt => opt.WithStrictOrdering());
+    }
+
+    [Fact]
+    public async Task Filter_List_Starts_With_No_Match()
+    {
+        var paginateOptionBuilder = new PaginateOptionsBuilder()
+            .Add("List__start", "x2");
+
+        var actual = await _db.TestEntities
+            .Select(ATestData.Projection)
+            .ToPaginatedAsync(paginateOptionBuilder);
+
+        actual.Data.Select(d => d.List).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Filter_List_Ends_With()
+    {
+        var paginateOptionBuilder = new PaginateOptionsBuilder()
+            .Add("List__end", "1");
+
+        var actual = await _db.TestEntities
+            .Select(ATestData.Projection)
+            .ToPaginatedAsync(paginateOptionBuilder);
+
+        actual.Data.Select(d => d.List).Should().BeEquivalentTo(new List<List<string>>()
+        {
+           new(){ "N1", "N2" }
+        }, opt => opt.WithStrictOrdering());
+    }
+
+    [Fact]
+    public async Task Filter_List_Ends_With_No_Match()
+    {
+        var paginateOptionBuilder = new PaginateOptionsBuilder()
+            .Add("List__end", "x1");
+
+        var actual = await _db.TestEntities
+            .Select(ATestData.Projection)
+            .ToPaginatedAsync(paginateOptionBuilder);
+
+        actual.Data.Select(d => d.List).Should().BeEmpty();
+    }
+
+    [Fact]
     public async Task Filter_List_In()
     {
         var paginateOptionBuilder = new PaginateOptionsBuilder()

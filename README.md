@@ -4,10 +4,10 @@
 <!-- TABLE OF CONTENTS -->
 
 - [Pagination Helper](#pagination-helper)
-- [Features](#Features)
+- [Features](#features)
 - [Getting Started](#getting-started)
 - [Quick Example](#quick-example)
-- [Documentations](#documentations)
+- [Documentation](#documentation)
   - [Query Parameters](#query-parameters)
   - [Filters](#filters)
   - [Property Types](#property-types)
@@ -18,46 +18,46 @@
 
 # Pagination Helper
 
-A dotnet entity framework extension class to dynamically perform server-side data processing (**paging, sorting, searching, and filtering**). The extension method is extended on top of EntityFramework IQueryable type. Try this out if you're tired of duplicated server-side processing boilerplate code!
+A .NET Entity Framework extension class to dynamically perform server-side data processing (**paging, sorting, searching, and filtering**). This extension method is built on top of EntityFramework's IQueryable type. Try it out if you're tired of duplicating server-side processing boilerplate code!
 
 # Features
 
 - Dynamically paginate, sort, filter, and search data
 - Easy to use on top of existing EF code
-- **Flexible**. Lots of built-in options to perform general filters
-- **Fast**. No in-memory operation, everything translated into SQL
-- **Secured**. Built with Dynamic LinQ, say no to SQL Injection
+- **Flexible**: Lots of built-in options to perform general filters
+- **Fast**: No in-memory operation, everything is translated into SQL
+- **Secure**: Built with Dynamic LinQ, protecting against SQL Injection
 
 # Getting Started
 
-1. Install NuGet Package
+1. Install NuGet Package:
 
-```ps
-> dotnet add package CatConsult.PaginationHelper
-```
+   ```ps
+   > dotnet add package CatConsult.PaginationHelper
+   ```
 
-2. Import Package
+2. Import Package:
 
-```C#
-using CatConsult.PaginationHelper;
-```
+   ```csharp
+   using CatConsult.PaginationHelper;
+   ```
 
-3. Use ToPaginateAsync
+3. Use ToPaginatedAsync:
 
-```C#
-DbContext.FooEntities.ToPaginatedAsync(paginateOptionsBuilder)
-```
+   ```csharp
+   DbContext.FooEntities.ToPaginatedAsync(paginateOptionsBuilder)
+   ```
 
 # Quick Example
 
-> _For more examples, checkout [integration tests class](./CatConsult.PaginationHelper.Tests/IntegrationTests.cs)_
+_For more examples, check out the [integration tests class](./CatConsult.PaginationHelper.Tests/IntegrationTests.cs)._
 
 ## ASP.Net API Project
 
-```C#
+```csharp
 ...
 
-// example entity
+// Example entity
 public class FooEntity
 {
     public string StrCol { get; set; }
@@ -68,12 +68,13 @@ public class FooEntity
 ...
 using CatConsult.PaginationHelper;
 ...
-// A random controller method. 
+
+// A random controller method
 public async Task<IPaginateResult<FooDto>> GetPaginatedData([FromQuery] PaginateOptionsBuilder paginateOptionsBuilder)
 {
     return await _db.FooEntities
-        .Where(...) // pre filter data if needed
-        .Select(...)// recommend project into a dto first, better for the performance.
+        .Where(...) // Pre-filter data if needed
+        .Select(...) // Recommend projecting into a DTO first, better for performance
         .ToPaginatedAsync(paginateOptionsBuilder);
 }
 ...
@@ -81,118 +82,117 @@ public async Task<IPaginateResult<FooDto>> GetPaginatedData([FromQuery] Paginate
 
 ## Returned Data Type (IPaginateResult)
 
-```ts
+```typescript
 {
-  data: any[]; // list of paginated data
-  count: number; // total matched records in the database
+  data: any[]; // List of paginated data
+  count: number; // Total matched records in the database
   currentPage: number;
   rowsPerPage: number;
   totalPages: number;
-  previousPage: number | null; // null if no previous page
-  nextPage: number | null; // null if no next page
+  previousPage: number | null; // Null if no previous page
+  nextPage: number | null; // Null if no next page
 }
 ```
 
 ## Example HTTP Requests
 
 ```
-HTTP GET /paginated?order=dateCol&orderDirection=desk&strCol__eq=hello
+HTTP GET /paginated?order=dateCol&orderDirection=desc&strCol__eq=hello
 ```
 
-^^^ the above example request will return all rows with `StrCol` contains `"hello"`, order by `DateCol` in `descending` order.
+The above example request will return all rows where `StrCol` equals `"hello"`, ordered by `DateCol` in descending order.
 
 ```
 HTTP GET /paginated?page=1&rowsPerPage=10&strCol=filter me&dateCol__gte=2000-1-1
 ```
 
-^^^ the above example request will return `second` page, `10` rows per page, rows that contains `"something"` in `StrCol` or `OtherCol`, `StrCol` contains `"filter me"`, `DateCol` greater than or equal to `2000-1-1` date,
+The above example request will return the second page, with 10 rows per page, where rows contain `"filter me"` in `StrCol` and `DateCol` is greater than or equal to `2000-1-1`.
 
-# Documentations
+# Documentation
 
 ## Query Parameters
 
-| Name           | Description                                                                                      |
-| -------------- | ------------------------------------------------------------------------------------------------ |
-| page           | Page number start with 0                                                                         |
-| rowsPerPage    | Maximum rows to return for a page                                                                |
-| orderBy        | The property name of the item to order/sort by                                                   |
-| orderDirection | order/sort by direction. Support `asc` or `desc`                                                 |
-| search         | Search value. Return items with matching `columns` values                                        |
-| columns        | Columns to search for. \*Required if provide `search`                                            |
-| other keys     | All other keys will be treated as `filter`. Checkout [Filters Section](#filters) for more detail |
+| Name           | Description                                                                                             |
+| -------------- | ------------------------------------------------------------------------------------------------------- |
+| page           | Page number starting from 0                                                                             |
+| rowsPerPage    | Maximum rows to return per page                                                                         |
+| orderBy        | The property name of the item to order/sort by                                                          |
+| orderDirection | Order/sort direction. Supports `asc` or `desc`                                                          |
+| search         | Search value. Returns items with matching `columns` values                                              |
+| columns        | Columns to search in. \*Required if `search` is provided                                                |
+| other keys     | All other keys will be treated as `filters`. Check out the [Filters Section](#filters) for more details |
 
 ## Filters
 
-We included some built-in filter keywords to provide more flexible filtering. Filter keyword can be append to any filter key and they are case-insensitive. All filter keywords start with `two underscore, __XX`. For example, if you want any strCol start with `"A"`, instead of `strCol=A` you will do `strCol__start=A`.
+Built-in filter keywords provide more flexible filtering. Filter keywords can be appended to any filter key and are case-insensitive. All filter keywords start with `__XX`. For example, to filter for any `strCol` starting with `"A"`, use `strCol__start=A` instead of `strCol=A`.
 
-| Keyword   | Filter Type              | Applicable Property Types          | Description                           | Note                                                                                                                                                                                                                       |
-| --------- | ------------------------ | ---------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| \_\_in    | Contains                 | `String` and `List` type only      | item value `contains` filter value    | Default filter type for `String` and `List` type. <br/> `String` type contains is case-insensitive.<br/> `String` and `List` type only `List` type contains is case-sensitive                                              |
-| \_\_eq    | Equal                    | `All` except `List / Object` type  | filter value `==` item value          | Default filter type for others except `String` and `List` type<br/> `String` type equal is case-insensitive<br/>`Date` type only compare `Date` part. If need to narrow down by time, use greater/less than filter keyword |
-| \_\_gt    | Greater Than             | `All`, except `List / Object` type | filter value `>` item value           |
-| \_\_gte   | Greater Than or Equal to | `All`, except `List / Object` type | filter value `>=` item value          |
-| \_\_lt    | Less Than or Equal to    | `All`, except `List / Object` type | filter value `<` item value           |
-| \_\_lte   | Less Than or Equal to    | `All`, except `List / Object` type | filter value `<=` item value          |
-| \_\_start | Starts With              | `String` type only                 | item value `starts with` filter value |
-| \_\_end   | Ends With                | `String` type only                 | item value `ends with` filter value   |
+| Keyword   | Filter Type              | Applicable Property Types              | Description                           | Note                                                                                                                                                                                                                |
+| --------- | ------------------------ | -------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| \_\_in    | Contains                 | `String` and `List` type only          | Item value `contains` filter value    | Default filter type for `String` and `List` types.<br/> `String` type contains is case-insensitive.<br/> `List` type contains is case-sensitive                                                                     |
+| \_\_eq    | Equal                    | `All` except `List / Object` type      | Filter value `==` item value          | Default filter type for others except `String` and `List` types<br/> `String` type equal is case-insensitive<br/> `Date` type compares only `Date` part. For time comparison, use greater/less than filter keywords |
+| \_\_gt    | Greater Than             | `All`, except `List / Object` type     | Filter value `>` item value           |
+| \_\_gte   | Greater Than or Equal to | `All`, except `List / Object` type     | Filter value `>=` item value          |
+| \_\_lt    | Less Than or Equal to    | `All`, except `List / Object` type     | Filter value `<` item value           |
+| \_\_lte   | Less Than or Equal to    | `All`, except `List / Object` type     | Filter value `<=` item value          |
+| \_\_start | Starts With              | `String` or `List of string` type only | Item value `starts with` filter value |
+| \_\_end   | Ends With                | `String` or `List of string` type only | Item value `ends with` filter value   |
 
 All filter keys accept multiple values.
 
-- Range keywords (`gt`, `gte`, `lt`, and `lte`) will join using `&&` operation.
-- All other keywords will join using `||` operation.
+- Range keywords (`gt`, `gte`, `lt`, and `lte`) join using `&&` operation.
+- All other keywords join using `||` operation.
 
-For example, `str=A&str=B&num_gte=1&num_lt=10` will translate into `(str == A || str == B) || (num >= 1 && num < 10)`
+For example, `str=A&str=B&num_gte=1&num_lt=10` translates into `(str == A || str == B) && (num >= 1 && num < 10)`.
 
 ## Property Types
 
-Some filtering behavior differs based on the item property type.
+Filtering behavior differs based on the item property type.
 
-- `String` and `List` type will use `Contains` filter by default. For example, `str=A` will translate into `str contains 'A'`
-- Other types will use `Equal` filter by default. For example, `number=1` will translate into `number equal 1`
+- `String` and `List` types use `Contains` filter by default. For example, `str=A` translates into `str contains 'A'`.
+- Other types use `Equal` filter by default. For example, `number=1` translates into `number equals 1`.
 
-When perform `search`, all types will use their default filter type.
+When performing a `search`, all types use their default filter type.
 
 ## PaginateOptionsBuilder
 
-A helper class to build paginate option. The class can be use to bind query params in the controller.
+A helper class to build paginate options. The class can be used to bind query params in the controller.
 
-```c#
+```csharp
 PaginateOptionsBuilder builder = new PaginateOptionsBuilder();
 
-// to add new keys
+// To add new keys
 builder
     .Add("orderBy", "date")
     .Add("orderDirection", "desc")
     .Add("strCol", "A", "B", "C")
 
-// to exclude some column from search or filter
+// To exclude some columns from search or filter
 builder.ExcludeColumns("strCol", "fooCol")
 
-// to only include defined column for search or filter
+// To only include defined columns for search or filter
 builder.IncludeColumns("strCol", "fooCol")
 
-// override default filters by type
+// Override default filters by type
 builder.OverrideDefaultFilterType(FilterPropertyType.String, FilterPropertyType.StartWith);
 ```
 
 ## ToPaginatedAsync
 
-Extension method of `IQueryable<T>`. Will return `IPaginateResult<T>`
+Extension method of `IQueryable<T>`. Returns `IPaginateResult<T>`.
 
-```c#
-
-// first parameter take PaginateOptionsBuiler
-// optional second parameter to transform IQueryable after apply filter, paginate, and sort
+```csharp
+// First parameter takes PaginateOptionsBuilder
+// Optional second parameter to transform IQueryable after applying filter, paginate, and sort
 DbContext.Entities.ToPaginated(paginateOptionsBuilder, paginatedQuery => paginatedQuery.Where(c => c.FooBool))
 ```
 
 ## IPaginateResult
 
-```c#
+```csharp
 public interface IPaginateResult<T>
 {
-    IEnumerable<T> Data { get; set; } // paginated and filtered item list
-    int Count { get; set; } // total matched records in the database
+    IEnumerable<T> Data { get; set; } // Paginated and filtered item list
+    int Count { get; set; } // Total matched records in the database
     int CurrentPage { get; set; }
     int RowsPerPage { get; set; }
     int TotalPages { get; }
@@ -206,10 +206,10 @@ public interface IPaginateResult<T>
 ## Prerequisites
 
 - Windows or macOS
-- .NET 6
+- .NET >6
 - Docker Desktop
-- Editor/IDE that support C#
+- Editor/IDE that supports C#
 
-## Running the Test
+## Running the Tests
 
-Use `dotnet test` command in project directory. The test will be running against real PostgresSQL database using Docker Fixture.
+Use the `dotnet test` command in the project directory. The tests will run against a real PostgreSQL database using Docker Fixture.
