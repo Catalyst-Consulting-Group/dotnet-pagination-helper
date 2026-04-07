@@ -18,13 +18,13 @@ namespace CatConsult.PaginationHelper
         /// <param name="optionsBuilder">options builder to create options to filter</param>
         /// <param name="transform">Optional transform the query after apply pagination options</param>
         /// <returns></returns>
-        public static Task<IPaginateResult<T>> ToPaginatedAsync<T>
+        public static async Task<IPaginateResult<T>> ToPaginatedAsync<T>
         (
             this IQueryable<T> query,
             IPaginateOptionsBuilder optionsBuilder,
             Func<IQueryable<T>, IQueryable<T>> transform = null)
         {
-            return query.ToPaginatedAsync(optionsBuilder?.Build(), transform);
+            return await query.ToPaginatedAsync(optionsBuilder?.Build(), transform);
         }
 
         /// <summary>
