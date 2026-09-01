@@ -2,30 +2,39 @@ name: Deploy to NuGet
 
 on: workflow_dispatch
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-dotnet@v3
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: "6.0.x"
+          dotnet-version: |
+            6.0.x
+            7.0.x
+            8.0.x
+            10.0.x
       - name: Install dependencies
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
       - name: Test
-        run: dotnet test -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=opencover --configuration Release --no-build --verbosity normal CatConsult.PaginationHelper.Tests/
+        run: dotnet test -p:CollectCoverage=true -p:CoverletOutput=TestResults/ -p:CoverletOutputFormat=opencover --configuration Release --no-build --no-restore --verbosity normal CatConsult.PaginationHelper.Tests/
       - name: Create Test Coverage Badge
         uses: simon-k/dotnet-code-coverage-badge@v1.0.0
         id: create_coverage_badge
         with:
           label: Unit Test Coverage
           color: brightgreen
-          path: CatConsult.PaginationHelper.Tests/TestResults/coverage.opencover.xml
+          path: CatConsult.PaginationHelper.Tests/TestResults/coverage.net10.0.opencover.xml
           gist-filename: code-coverage.json
           gist-id: 33a4dd1f54e8b9cf42cb49328e0c282a
           gist-auth-token: ${{ secrets.GIST_AUTH_TOKEN }}
+      - name: Pack
+        run: dotnet pack CatConsult.PaginationHelper/CatConsult.PaginationHelper.csproj --configuration Release --no-build --no-restore --output artifacts/packages
       - name: Deploy
-        run: nuget push **\*.nupkg -Source 'https://api.nuget.org/v3/index.json' -ApiKey ${{secrets.NUGET_DEPLOY_KEY}}
+        run: dotnet nuget push artifacts/packages/*.nupkg --source https://api.nuget.org/v3/index.json --api-key "${{ secrets.NUGET_DEPLOY_KEY }}" --skip-duplicate

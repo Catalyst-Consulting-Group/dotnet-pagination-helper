@@ -70,7 +70,7 @@ namespace CatConsult.PaginationHelper.Tests.Migrations
 
             modelBuilder.Entity("CatConsult.PaginationHelper.Tests.Helpers.TestNestedEntity", b =>
                 {
-                    b.HasOne("PaginationHelper.Tests.Helpers.TestEntity", "Entity")
+                    b.HasOne("CatConsult.PaginationHelper.Tests.Helpers.TestEntity", "Entity")
                         .WithMany("List")
                         .HasForeignKey("EntityId");
 
