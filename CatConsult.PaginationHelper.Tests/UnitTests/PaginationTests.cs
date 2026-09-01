@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using CatConsult.PaginationHelper.Tests.Helpers;
@@ -120,5 +122,19 @@ public class PaginationTests
 
         actual.Data.Should().HaveCount(6);
         actual.Count.Should().Be(6);
+    }
+
+    [Fact]
+    public async Task Cancellation_Is_Propagated()
+    {
+        var paginateOptionBuilder = new PaginateOptionsBuilder();
+        using var cancellationTokenSource = new CancellationTokenSource();
+        cancellationTokenSource.Cancel();
+
+        var action = () => _db.TestEntities
+            .Select(ATestData.Projection)
+            .ToPaginatedAsync(paginateOptionBuilder, cancellationTokenSource.Token);
+
+        await action.Should().ThrowAsync<OperationCanceledException>();
     }
 }

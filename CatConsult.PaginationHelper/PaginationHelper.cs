@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +15,7 @@ namespace CatConsult.PaginationHelper
         /// </summary>
         /// <typeparam name="T">Query Item Type</typeparam>
         /// <param name="query">Queryable list</param>
-        /// <param name="optionsBuilder">options builder to create options to filter</param>
+        /// <param name="optionsBuilder">Options builder to create options to filter</param>
         /// <param name="transform">Optional transform the query after apply pagination options</param>
         /// <returns></returns>
         public static Task<IPaginateResult<T>> ToPaginatedAsync<T>
@@ -24,7 +24,26 @@ namespace CatConsult.PaginationHelper
             IPaginateOptionsBuilder optionsBuilder,
             Func<IQueryable<T>, IQueryable<T>> transform = null)
         {
-            return query.ToPaginatedAsync(optionsBuilder?.Build(), transform);
+            return query.ToPaginatedAsync(optionsBuilder?.Build(), CancellationToken.None, transform);
+        }
+
+        /// <summary>
+        /// Dynamically filter, sort, and paginate a query with cancellation support
+        /// </summary>
+        /// <typeparam name="T">Query Item Type</typeparam>
+        /// <param name="query">Queryable list</param>
+        /// <param name="optionsBuilder">Options builder to create options to filter</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <param name="transform">Optional transform the query after apply pagination options</param>
+        /// <returns></returns>
+        public static Task<IPaginateResult<T>> ToPaginatedAsync<T>
+        (
+            this IQueryable<T> query,
+            IPaginateOptionsBuilder optionsBuilder,
+            CancellationToken cancellationToken,
+            Func<IQueryable<T>, IQueryable<T>> transform = null)
+        {
+            return query.ToPaginatedAsync(optionsBuilder?.Build(), cancellationToken, transform);
         }
 
         /// <summary>
@@ -35,10 +54,29 @@ namespace CatConsult.PaginationHelper
         /// <param name="options">Options to perform filter, search, and sort</param>
         /// <param name="transform">Optional transform the query after apply pagination options</param>
         /// <returns></returns>
+        public static Task<IPaginateResult<T>> ToPaginatedAsync<T>
+        (
+            this IQueryable<T> query,
+            IPaginateOptions options,
+            Func<IQueryable<T>, IQueryable<T>> transform = null)
+        {
+            return query.ToPaginatedAsync(options, CancellationToken.None, transform);
+        }
+
+        /// <summary>
+        /// Dynamically filter, sort, and paginate a query with cancellation support
+        /// </summary>
+        /// <typeparam name="T">Query Item Type</typeparam>
+        /// <param name="query">Queryable list</param>
+        /// <param name="options">Options to perform filter, search, and sort</param>
+        /// <param name="cancellationToken">Cancellation Token</param>
+        /// <param name="transform">Optional transform after applying pagination options</param>
+        /// <returns></returns>
         public static async Task<IPaginateResult<T>> ToPaginatedAsync<T>
         (
             this IQueryable<T> query,
             IPaginateOptions options,
+            CancellationToken cancellationToken,
             Func<IQueryable<T>, IQueryable<T>> transform = null)
         {
 
@@ -91,7 +129,7 @@ namespace CatConsult.PaginationHelper
                 query = transform(query);
             }
 
-            var count = await query.CountAsync();
+            var count = await query.CountAsync(cancellationToken);
 
             // only skip and take if RowsPerPage is greater than 0
             if (options.RowsPerPage > 0)
@@ -101,7 +139,7 @@ namespace CatConsult.PaginationHelper
                     .Take(options.RowsPerPage);
             }
 
-            var result = await query.ToListAsync();
+            var result = await query.ToListAsync(cancellationToken);
 
             return new PaginateResult<T>()
             {
@@ -189,7 +227,7 @@ namespace CatConsult.PaginationHelper
                 {
                     filterType = PaginateFilterType.Equal;
                 }
-            };
+            }
 
             switch (filterType)
             {
@@ -204,7 +242,7 @@ namespace CatConsult.PaginationHelper
                 case PaginateFilterType.In:
                     if (ptype == FilterPropertyType.String)
                     {
-                        return $"{name}.ToLower().Contains(\"{value.ToLower()}\")";
+                        return $"{name}.ToUpper().Contains(\"{value.ToUpper()}\")";
                     }
                     // This will turn Parent.Child into Parent.Any(Parent => Parent.Child == value)
                     var parentName = name.Split('.')[0];
@@ -212,7 +250,7 @@ namespace CatConsult.PaginationHelper
                 case PaginateFilterType.Equal:
                     if (ptype == FilterPropertyType.String)
                     {
-                        return $"{name}.ToLower() == \"{value.ToLower()}\"";
+                        return $"{name}.ToUpper() == \"{value.ToUpper()}\"";
                     }
                     else if (ptype == FilterPropertyType.DateTime)
                     {
@@ -243,10 +281,10 @@ namespace CatConsult.PaginationHelper
             {
                 // This will turn Parent.Child into Parent.Any(Parent => Parent.Child == value)
                 var parentName = name.Split('.')[0];
-                return $"{parentName}.Any({parentName} => {name}.ToLower().{op}(\"{value.ToLower()}\"))";
+                return $"{parentName}.Any({parentName} => {name}.ToUpper().{op}(\"{value.ToUpper()}\"))";
             }
 
-            return $"{name}.ToLower().{op}(\"{value.ToLower()}\")";
+            return $"{name}.ToUpper().{op}(\"{value.ToUpper()}\")";
         }
 
         private static string ValidCompValOrFalse(FilterPropertyType ptype, string name, string op, string value)
