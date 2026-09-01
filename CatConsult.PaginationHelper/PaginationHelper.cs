@@ -242,7 +242,7 @@ namespace CatConsult.PaginationHelper
                 case PaginateFilterType.In:
                     if (ptype == FilterPropertyType.String)
                     {
-                        return $"{name}.ToLower().Contains(\"{value.ToLower()}\")";
+                        return $"{name}.ToUpper().Contains(\"{value.ToUpper()}\")";
                     }
                     // This will turn Parent.Child into Parent.Any(Parent => Parent.Child == value)
                     var parentName = name.Split('.')[0];
@@ -250,7 +250,7 @@ namespace CatConsult.PaginationHelper
                 case PaginateFilterType.Equal:
                     if (ptype == FilterPropertyType.String)
                     {
-                        return $"{name}.ToLower() == \"{value.ToLower()}\"";
+                        return $"{name}.ToUpper() == \"{value.ToUpper()}\"";
                     }
                     else if (ptype == FilterPropertyType.DateTime)
                     {
@@ -281,10 +281,10 @@ namespace CatConsult.PaginationHelper
             {
                 // This will turn Parent.Child into Parent.Any(Parent => Parent.Child == value)
                 var parentName = name.Split('.')[0];
-                return $"{parentName}.Any({parentName} => {name}.ToLower().{op}(\"{value.ToLower()}\"))";
+                return $"{parentName}.Any({parentName} => {name}.ToUpper().{op}(\"{value.ToUpper()}\"))";
             }
 
-            return $"{name}.ToLower().{op}(\"{value.ToLower()}\")";
+            return $"{name}.ToUpper().{op}(\"{value.ToUpper()}\")";
         }
 
         private static string ValidCompValOrFalse(FilterPropertyType ptype, string name, string op, string value)
